@@ -57,8 +57,14 @@ vim.keymap.set('n', '<leader>ff', builtin.find_files, {desc = "Find files"})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {desc = "Live grep"})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {desc = "Buffers" })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {desc = "Help tags"})
+vim.keymap.set('n', '<leader>fa', function()
+  require('telescope.builtin').find_files({
+    no_ignore = true
+  })
+end, { desc = "Find Files (All, including .gitignored)" })
 
 -- lsp
 vim.keymap.set('n', '<leader>ld', vim.lsp.buf.definition, { noremap = true, silent = true, desc = "Go to definition" })
 vim.keymap.set('n', '<leader>lt', vim.lsp.buf.type_definition, { noremap = true, silent = true, desc = "Go to type definition" })
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.references, { noremap = true, silent = true, desc = "Find references" })
+vim.keymap.set('n', '<leader>la', vim.lsp.buf.code_action, { desc = "Code Action" })

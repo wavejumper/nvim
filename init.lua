@@ -46,7 +46,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 require("mason").setup()
 require("mason-lspconfig").setup()
-require("lspconfig").rust_analyzer.setup {}
+-- require("lspconfig").rust_analyzer.setup {}
 require("lspconfig").clojure_lsp.setup {}
 
 -- <leader> bindings

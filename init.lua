@@ -61,9 +61,22 @@ vim.g.zig_fmt_parse_errors = 0
 
 vim.g.sexp_filetypes = 'clojure,scheme,lisp,timl,fennel,janet'
 
+--- vim.g.rainbow_active = 1
+
 require("mason").setup()
 require("mason-lspconfig").setup()
 vim.lsp.enable('zls')
+
+
+vim.filetype.add({
+    extension = {
+        janet = 'janet',
+    },
+    filename = {
+        ['.janetrc'] = 'janet',
+    },
+})
+
 -- vim.lsp.config.rust_analyzer.setup {}
 -- vim.lsp.config.clojure_lsp.setup {}
 -- vim.lsp.config.zls.setup {}

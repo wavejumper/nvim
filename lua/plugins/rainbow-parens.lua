@@ -2,31 +2,17 @@ local M = {
   "HiPhish/rainbow-delimiters.nvim",
   config = function() 
     require('rainbow-delimiters.setup').setup {
-          strategy = {
-            [''] = nil,
-        janet = 'rainbow-delimiters.strategy.local',
-        clojure = 'rainbow-delimiters.strategy.local',
-    },
+    whitelist = { 'lisp', 'clojure', 'scheme', 'racket', 'fennel', 'janet_simple' },
     query = {
-        [''] = nil,
+        [''] = nil, 
+        lisp = 'rainbow-delimiters',
         clojure = 'rainbow-delimiters',
-        janet = 'rainbow-delimiters',
-        lua = 'rainbow-blocks',
+        scheme = 'rainbow-delimiters',
+        racket = 'rainbow-delimiters',
+        fennel = 'rainbow-delimiters',
+        janet_simple = 'rainbow-delimiters',
     },
-    priority = {
-        [''] = 110,
-        lua = 210,
-    },
-    highlight = {
-        'RainbowDelimiterRed',
-        'RainbowDelimiterYellow',
-        'RainbowDelimiterBlue',
-        'RainbowDelimiterOrange',
-        'RainbowDelimiterGreen',
-        'RainbowDelimiterViolet',
-        'RainbowDelimiterCyan',
-    },
-    }
+}
   end
 }
 

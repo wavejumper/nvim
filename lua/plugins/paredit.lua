@@ -19,10 +19,6 @@ local M = {
     ft = { 'clojure', 'fennel', 'scheme', 'janet' },
   },
   {
-    'janet-lang/janet.vim',
-    ft = 'janet',
-  },
-  {
   'gpanders/nvim-parinfer',
   ft = { 'clojure', 'fennel', 'scheme', 'janet' },
 }

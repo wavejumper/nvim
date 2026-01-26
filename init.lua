@@ -1,3 +1,6 @@
+vim.opt.clipboard = 'unnamedplus'   -- use system clipboard 
+vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
+
 vim.opt.termguicolors = true
 
 -- Use spaces instead of tabs
@@ -19,7 +22,9 @@ vim.opt.smartindent = true
 vim.opt.autoindent = true
 
 -- Show line numbers
-vim.opt.number = true
+vim.opt.number = true               -- show absolute number
+vim.opt.relativenumber = true       -- add numbers to each line on the left side
+vim.opt.cursorline = true           -- highlight cursor line underneath the cursor horizontally
 
 require("config.lazy")
 
@@ -44,10 +49,24 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 })
 
 
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.zig',
+  group = 'AutoFormatting',
+  callback = function()
+    vim.lsp.buf.format({ async = true })
+  end,
+})
+
+vim.g.zig_fmt_parse_errors = 0
+
+vim.g.sexp_filetypes = 'clojure,scheme,lisp,timl,fennel,janet'
+
 require("mason").setup()
 require("mason-lspconfig").setup()
--- require("lspconfig").rust_analyzer.setup {}
-require("lspconfig").clojure_lsp.setup {}
+vim.lsp.enable('zls')
+-- vim.lsp.config.rust_analyzer.setup {}
+-- vim.lsp.config.clojure_lsp.setup {}
+-- vim.lsp.config.zls.setup {}
 
 -- <leader> bindings
 --
@@ -68,3 +87,16 @@ vim.keymap.set('n', '<leader>ld', vim.lsp.buf.definition, { noremap = true, sile
 vim.keymap.set('n', '<leader>lt', vim.lsp.buf.type_definition, { noremap = true, silent = true, desc = "Go to type definition" })
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.references, { noremap = true, silent = true, desc = "Find references" })
 vim.keymap.set('n', '<leader>la', vim.lsp.buf.code_action, { desc = "Code Action" })
+
+local opts = { buffer = true, silent = true }
+
+-- Sexp manipulation under <leader>s
+vim.keymap.set('n', '<leader>s<', '<Plug>(sexp_emit_head_element)', { buffer = true, desc = 'Slurp left' })
+vim.keymap.set('n', '<leader>s>', '<Plug>(sexp_emit_tail_element)', { buffer = true, desc = 'Barf left' })
+vim.keymap.set('n', '<leader>s)', '<Plug>(sexp_capture_next_element)', { buffer = true, desc = 'Slurp right' })
+vim.keymap.set('n', '<leader>s(', '<Plug>(sexp_capture_prev_element)', { buffer = true, desc = 'Barf right' })
+vim.keymap.set('n', '<leader>ss', '<Plug>(sexp_splice_list)', { buffer = true, desc = 'Splice form' })
+vim.keymap.set('n', '<leader>sr', '<Plug>(sexp_raise_list)', { buffer = true, desc = 'Raise form' })
+vim.keymap.set('n', '<leader>se', '<Plug>(sexp_raise_element)', { buffer = true, desc = 'Raise element' })
+vim.keymap.set('n', '<leader>si', '<Plug>(sexp_insert_at_list_head)', { buffer = true, desc = 'Insert at head' })
+vim.keymap.set('n', '<leader>sa', '<Plug>(sexp_insert_at_list_tail)', { buffer = true, desc = 'Insert at tail' })

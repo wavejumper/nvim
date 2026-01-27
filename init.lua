@@ -151,6 +151,7 @@ vim.keymap.set('n', '<leader>ld', vim.lsp.buf.definition, { noremap = true, sile
 vim.keymap.set('n', '<leader>lt', vim.lsp.buf.type_definition, { noremap = true, silent = true, desc = "Go to type definition" })
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.references, { noremap = true, silent = true, desc = "Find references" })
 vim.keymap.set('n', '<leader>la', vim.lsp.buf.code_action, { desc = "Code Action" })
+vim.keymap.set('n', '<leader>lh', vim.lsp.buf.hover, { noremap = true, silent = true, desc = "Hover documentation" })
 
 -- git
 vim.keymap.set('n', '<leader>gl', '<cmd>Gitsigns toggle_current_line_blame<cr>', { desc = 'Git blame line' })

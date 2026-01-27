@@ -113,3 +113,11 @@ vim.keymap.set('n', '<leader>sr', '<Plug>(sexp_raise_list)', { buffer = true, de
 vim.keymap.set('n', '<leader>se', '<Plug>(sexp_raise_element)', { buffer = true, desc = 'Raise element' })
 vim.keymap.set('n', '<leader>si', '<Plug>(sexp_insert_at_list_head)', { buffer = true, desc = 'Insert at head' })
 vim.keymap.set('n', '<leader>sa', '<Plug>(sexp_insert_at_list_tail)', { buffer = true, desc = 'Insert at tail' })
+
+
+-- Conjure REPL stuffs
+vim.keymap.set("n", "<leader>ee", "<cmd>ConjureEvalCurrentForm<cr>", { desc = "Eval current form" })
+vim.keymap.set("v", "<leader>ee", "<cmd>ConjureEvalVisual<cr>", { desc = "Eval selection" })
+vim.keymap.set("n", "<leader>ef", "<cmd>ConjureEvalBuf<cr>", { desc = "Eval entire file" })
+vim.keymap.set("n", "<leader>er", "<cmd>ConjureLogVSplit<cr>", { desc = "Open REPL (vsplit)" })
+

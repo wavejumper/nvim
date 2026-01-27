@@ -1,6 +1,10 @@
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.opt.clipboard = 'unnamedplus'   -- use system clipboard 
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 
+vim.opt.fixendofline = true
 vim.opt.termguicolors = true
 
 -- Use spaces instead of tabs
@@ -28,7 +32,13 @@ vim.opt.cursorline = true           -- highlight cursor line underneath the curs
 
 require("config.lazy")
 
-vim.cmd("colorscheme rose-pine-moon")
+require("nvim-tree").setup({
+  view = {
+    width = 45,
+  },
+})
+
+vim.cmd("colorscheme catppuccin-frappe")
 
 vim.api.nvim_create_augroup('AutoFormatting', {})
 
@@ -50,6 +60,39 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 
 vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.clj*',
+  group = 'AutoFormatting',
+  callback = function()
+    vim.lsp.buf.format({ async = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.edn',
+  group = 'AutoFormatting',
+  callback = function()
+    vim.lsp.buf.format({ async = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.yml',
+  group = 'AutoFormatting',
+  callback = function()
+    vim.lsp.buf.format({ async = true })
+  end,
+})
+
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.json',
+  group = 'AutoFormatting',
+  callback = function()
+    vim.lsp.buf.format({ async = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufWritePre', {
   pattern = '*.zig',
   group = 'AutoFormatting',
   callback = function()
@@ -66,6 +109,7 @@ vim.g.sexp_filetypes = 'clojure,scheme,lisp,timl,fennel,janet'
 require("mason").setup()
 require("mason-lspconfig").setup()
 vim.lsp.enable('zls')
+vim.lsp.enable('clojure_lsp')
 
 
 vim.filetype.add({
@@ -85,6 +129,8 @@ vim.filetype.add({
 --
 -- telescope
 local builtin = require('telescope.builtin')
+vim.keymap.set("n", "<leader>ft", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle NvimTree" })
+vim.keymap.set("n", "<leader>fy", "<cmd>NvimTreeFindFile<cr>", { desc = "Focus current file in NvimTree" })
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {desc = "Find files"})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {desc = "Live grep"})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {desc = "Buffers" })
@@ -100,6 +146,19 @@ vim.keymap.set('n', '<leader>ld', vim.lsp.buf.definition, { noremap = true, sile
 vim.keymap.set('n', '<leader>lt', vim.lsp.buf.type_definition, { noremap = true, silent = true, desc = "Go to type definition" })
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.references, { noremap = true, silent = true, desc = "Find references" })
 vim.keymap.set('n', '<leader>la', vim.lsp.buf.code_action, { desc = "Code Action" })
+
+-- git
+vim.keymap.set('n', '<leader>gl', '<cmd>Gitsigns toggle_current_line_blame<cr>', { desc = 'Git blame line' })
+vim.keymap.set('n', '<leader>gb', '<cmd>Gitsigns blame<cr>', { desc = 'Git blame line' })
+
+
+vim.keymap.set('n', '<leader>ln', function()
+  require('illuminate').goto_next_reference()
+end, { noremap = true, silent = true, desc = "Next reference" })
+
+vim.keymap.set('n', '<leader>lp', function()
+  require('illuminate').goto_prev_reference()
+end, { noremap = true, silent = true, desc = "Previous reference" })
 
 local opts = { buffer = true, silent = true }
 
@@ -121,3 +180,38 @@ vim.keymap.set("v", "<leader>ee", "<cmd>ConjureEvalVisual<cr>", { desc = "Eval s
 vim.keymap.set("n", "<leader>ef", "<cmd>ConjureEvalBuf<cr>", { desc = "Eval entire file" })
 vim.keymap.set("n", "<leader>er", "<cmd>ConjureLogVSplit<cr>", { desc = "Open REPL (vsplit)" })
 
+local function tab_win_closed(winnr)
+  local api = require"nvim-tree.api"
+  local tabnr = vim.api.nvim_win_get_tabpage(winnr)
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
+  local buf_info = vim.fn.getbufinfo(bufnr)[1]
+  local tab_wins = vim.tbl_filter(function(w) return w~=winnr end, vim.api.nvim_tabpage_list_wins(tabnr))
+  local tab_bufs = vim.tbl_map(vim.api.nvim_win_get_buf, tab_wins)
+  if buf_info.name:match(".*NvimTree_%d*$") then            -- close buffer was nvim tree
+    -- Close all nvim tree on :q
+    if not vim.tbl_isempty(tab_bufs) then                      -- and was not the last window (not closed automatically by code below)
+      api.tree.close()
+    end
+  else                                                      -- else closed buffer was normal buffer
+    if #tab_bufs == 1 then                                    -- if there is only 1 buffer left in the tab
+      local last_buf_info = vim.fn.getbufinfo(tab_bufs[1])[1]
+      if last_buf_info.name:match(".*NvimTree_%d*$") then       -- and that buffer is nvim tree
+        vim.schedule(function ()
+          if #vim.api.nvim_list_wins() == 1 then                -- if its the last buffer in vim
+            vim.cmd "quit"                                        -- then close all of vim
+          else                                                  -- else there are more tabs open
+            vim.api.nvim_win_close(tab_wins[1], true)             -- then close only the tab
+          end
+        end)
+      end
+    end
+  end
+end
+
+vim.api.nvim_create_autocmd("WinClosed", {
+  callback = function ()
+    local winnr = tonumber(vim.fn.expand("<amatch>"))
+    vim.schedule_wrap(tab_win_closed(winnr))
+  end,
+  nested = true
+})

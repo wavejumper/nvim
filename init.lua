@@ -206,3 +206,8 @@ vim.keymap.set("n", "<leader>er", "<cmd>ConjureLogVSplit<cr>", { desc = "Open RE
 vim.api.nvim_create_autocmd({"QuitPre"}, {
     callback = function() vim.cmd("NvimTreeClose") end,
 })
+
+vim.diagnostic.config({
+  underline = true,
+  virtual_text = true,
+})

@@ -1,10 +1,26 @@
 -- vim.g.loaded_netrw = 1
 -- vim.g.loaded_netrwPlugin = 1
 
-vim.opt.clipboard = 'unnamedplus'   -- use system clipboard 
+vim.opt.clipboard = 'unnamedplus'   -- use system clipboard
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 
+-- whitespace trim
+local group = vim.api.nvim_create_augroup("TrimWhitespace", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = group,
+  pattern = "*",
+  command = "%s/\\s\\+$//e", -- Removes trailing whitespace
+})
+
+vim.api.nvim_set_hl(0, 'TrailingWhitespace', { bg='#ff0000' })
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = '*',
+  command = [[match TrailingWhitespace /\s\+$/]]
+})
+
 vim.opt.fixendofline = true
+vim.o.endofline = true
+
 vim.opt.termguicolors = true
 
 -- Use spaces instead of tabs

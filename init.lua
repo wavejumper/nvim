@@ -137,6 +137,20 @@ local builtin = require('telescope.builtin')
 vim.keymap.set("n", "<leader>ft", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle NvimTree" })
 vim.keymap.set("n", "<leader>fy", "<cmd>NvimTreeFindFile<cr>", { desc = "Focus current file in NvimTree" })
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {desc = "Find files"})
+vim.keymap.set('n', '<leader>fF', function()
+  require('telescope.builtin').find_files({
+    default_text = vim.fn.expand('<cword>')
+  })
+end, { desc = "Find files with word under cursor" })
+vim.keymap.set('v', '<leader>ff', function()
+  -- Yank the visual selection to a register
+  vim.cmd('normal! "zy')
+  text = vim.fn.getreg('z')
+  text = text:gsub('\n', ' '):gsub('%s+', ' '):gsub('^%s*(.-)%s*$', '%1')
+  require('telescope.builtin').find_files({
+    default_text = text
+  })
+end, { desc = "Find files with visual selection" })
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {desc = "Live grep"})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {desc = "Buffers" })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {desc = "Help tags"})

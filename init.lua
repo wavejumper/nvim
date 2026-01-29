@@ -12,6 +12,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   command = "%s/\\s\\+$//e", -- Removes trailing whitespace
 })
 
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  command = "%s/\\n\\+\\%$//e",
+})
+
 vim.api.nvim_set_hl(0, 'TrailingWhitespace', { bg='#ff0000' })
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = '*',
@@ -125,7 +130,7 @@ vim.g.zig_fmt_parse_errors = 0
 
 vim.g.sexp_filetypes = 'clojure,scheme,lisp,timl,fennel,janet'
 
---- vim.g.rainbow_active = 1
+vim.g.rainbow_active = 1
 
 require("mason").setup()
 require("mason-lspconfig").setup()
@@ -158,6 +163,12 @@ vim.keymap.set('n', '<leader>fF', function()
     default_text = vim.fn.expand('<cword>')
   })
 end, { desc = "Find files with word under cursor" })
+
+vim.keymap.set('n', '<leader>fG', function()
+  require('telescope.builtin').live_grep ({
+    default_text = vim.fn.expand('<cword>')
+  })
+end, { desc = "Live grep with word under cursor" })
 vim.keymap.set('v', '<leader>ff', function()
   -- Yank the visual selection to a register
   vim.cmd('normal! "zy')
@@ -175,6 +186,15 @@ vim.keymap.set('n', '<leader>fa', function()
     no_ignore = true
   })
 end, { desc = "Find Files (All, including .gitignored)" })
+vim.keymap.set('n', '<leader>fr', function()
+  require('telescope').extensions.frecency.frecency({
+    workspace = 'CWD'
+  })
+end, { desc = 'Frecency (CWD)' })
+
+vim.keymap.set('n', '<leader>fR', function()
+  require('telescope').extensions.frecency.frecency()
+end, { desc = 'Frecency' })
 
 -- lsp
 vim.keymap.set('n', '<leader>ld', vim.lsp.buf.definition, { noremap = true, silent = true, desc = "Go to definition" })
@@ -212,7 +232,8 @@ vim.keymap.set('n', '<leader>sa', '<Plug>(sexp_insert_at_list_tail)', { buffer =
 
 
 -- Conjure REPL stuffs
-vim.keymap.set("n", "<leader>ee", "<cmd>ConjureEvalCurrentForm<cr>", { desc = "Eval current form" })
+vim.keymap.set("n", "<leader>ee", "<cmd>ConjureEvalRootForm<cr>", { desc = "Eval root form" })
+vim.keymap.set("n", "<leader>eE", "<cmd>ConjureEvalCurrentForm<cr>", { desc = "Eval current form" })
 vim.keymap.set("v", "<leader>ee", "<cmd>ConjureEvalVisual<cr>", { desc = "Eval selection" })
 vim.keymap.set("n", "<leader>ef", "<cmd>ConjureEvalBuf<cr>", { desc = "Eval entire file" })
 vim.keymap.set("n", "<leader>er", "<cmd>ConjureLogVSplit<cr>", { desc = "Open REPL (vsplit)" })

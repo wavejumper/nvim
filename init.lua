@@ -246,3 +246,36 @@ vim.diagnostic.config({
   underline = true,
   virtual_text = true,
 })
+
+
+-- Conjure REPL stuffs
+vim.keymap.set("n", "<leader>ee", "<cmd>ConjureEvalRootForm<cr>", { desc = "Eval root form" })
+vim.keymap.set("n", "<leader>eE", "<cmd>ConjureEvalCurrentForm<cr>", { desc = "Eval current form" })
+vim.keymap.set("v", "<leader>ee", "<cmd>ConjureEvalVisual<cr>", { desc = "Eval selection" })
+vim.keymap.set("n", "<leader>ef", "<cmd>ConjureEvalBuf<cr>", { desc = "Eval entire file" })
+vim.keymap.set("n", "<leader>er", "<cmd>ConjureLogVSplit<cr>", { desc = "Open REPL (vsplit)" })
+
+vim.api.nvim_create_autocmd({"QuitPre"}, {
+    callback = function() vim.cmd("NvimTreeClose") end,
+})
+
+vim.diagnostic.config({
+  underline = true,
+  virtual_text = true,
+})
+
+vim.keymap.set('n', '<leader>tn', ':tabnew<CR>', { desc = 'New tab' })
+vim.keymap.set('n', '<leader>tc', ':tabclose<CR>', { desc = 'Close tab' })
+vim.keymap.set('n', '<leader>tN', ':tabnext<CR>', { desc = 'Next tab' })
+vim.keymap.set('n', '<leader>tP', ':tabprevious<CR>', { desc = 'Previous tab' })
+-- Navigate to specific tabs
+vim.keymap.set('n', '<leader>t0', ':tabfirst<CR>', { desc = 'Go to first tab' })
+vim.keymap.set('n', '<leader>t1', ':tabnext 1<CR>', { desc = 'Go to tab 1' })
+vim.keymap.set('n', '<leader>t2', ':tabnext 2<CR>', { desc = 'Go to tab 2' })
+vim.keymap.set('n', '<leader>t3', ':tabnext 3<CR>', { desc = 'Go to tab 3' })
+vim.keymap.set('n', '<leader>t4', ':tabnext 4<CR>', { desc = 'Go to tab 4' })
+vim.keymap.set('n', '<leader>t5', ':tabnext 5<CR>', { desc = 'Go to tab 5' })
+vim.keymap.set('n', '<leader>t6', ':tabnext 6<CR>', { desc = 'Go to tab 6' })
+vim.keymap.set('n', '<leader>t7', ':tabnext 7<CR>', { desc = 'Go to tab 7' })
+vim.keymap.set('n', '<leader>t8', ':tabnext 8<CR>', { desc = 'Go to tab 8' })
+vim.keymap.set('n', '<leader>t9', ':tablast<CR>', { desc = 'Go to last tab' })
